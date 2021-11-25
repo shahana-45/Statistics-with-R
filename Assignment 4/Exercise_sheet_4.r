@@ -11,8 +11,13 @@
 ## Submit your homework via cms
 
 ## Please write below your (and your teammates') name, matriculation number. 
-## Name:
-## Matriculation number:
+## #team: 31
+## Name:Senorita Rodricks
+## Matriculation number: 7015445
+## Name:Shahana Mogal
+## Matriculation number: 7015588
+## Name:Sneha Mariam Sam
+## Matriculation number: 7015831
 
 ###########################################################################################
 ###########################################################################################
@@ -61,20 +66,20 @@ se = function(x){sd(x)/sqrt(length(x))}
 ##  https://datacarpentry.org/R-genomics/04-dplyr.html#split-apply-combine_data_analysis_and_the_summarize()_function
 summaryByPrevType <- lexdat %>%
   group_by(PrevType) %>%
-  summarize(mean = mean(RT, na.rm = TRUE), sd = sd(RT))
+  summarize(mean = mean(RT, na.rm = TRUE), se = se(RT))
 
 summaryByPrevType
 
 
 ## 3. Describe the resulting data set (summaryByPrevType) in your own words
 # The summaryByPrevType data frame contains the mean reaction times that the participants took to decide whether
-# what they were shown is a word or non word, as well as the standard deviations from the means.
+# what they were shown is a word or non word, as well as the standard error from the means.
 
 ## 4. Now use summaryByPrevType to create the barplot with error bars denoting the 95% CI
 ##  (i.e. mean +/-1.96 * se)
 ggplot(summaryByPrevType) +
   geom_bar( aes(x=PrevType, y=mean), stat="identity", fill="skyblue", alpha=0.7) +
-  geom_errorbar( aes(x=PrevType, ymin=mean-(1.96 * sd), ymax=mean+(1.96*sd)), width=0.4, colour="orange")
+  geom_errorbar( aes(x=PrevType, ymin=mean-(1.96 * se), ymax=mean+(1.96 * se)), colour="orange")
 
 
 ## 5. The barplot always starts at zero, which makes the portion of the graph, we are most 
@@ -83,7 +88,7 @@ ggplot(summaryByPrevType) +
 ##  Hint: if you get a complaint, try to add group = 1 to your aes
 ggplot(summaryByPrevType, aes(x=PrevType, y=mean, group=1, color=PrevType)) + 
   geom_line() + geom_point() +
-  geom_errorbar(aes(ymin = mean-(1.96 * sd), ymax = mean+(1.96*sd)))
+  geom_errorbar(aes(ymin = mean-(1.96 * se), ymax = mean+(1.96 * se)))
 
 ## 6. Gauging from the plot, does it look like there's an important difference in mean RT 
 ##  after words compared to nonwords?

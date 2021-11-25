@@ -124,17 +124,26 @@ hist(h2$mean,breaks = 8, main="Non-word")
 plot(density(h1$mean))
 plot(density(h2$mean))
 
-
 ## 11. Based on the histograms and the density plots - are these data normally 
 ##  distributed?
 
+## Yes, but the data are plotted with a slight skew.
+
 ## 12. Create boxplots of the mean RT in bySubj by PrevType
+
+boxplot(mean~PrevType, data=bySubj)
 
 ## 13. Compute the t-test to compare the mean RT between decisions following on a word
 ##  vs a nonword using the data in bySubj.
 ##  Do you need a paired t-test or independent sample t-test? why?
 
+t.test(mean ~ PrevType, data = bySubj, paired = TRUE)
+
+## Since the data are not independent, we required a paired t-test.
+
 ## 14. What does the output tell you? What conclusions do you draw?
+
+## According to the output of the t-test, p < 0.05. Hence, we can reject the null hypothesis.
 
 ## 15. In addition to the long-format data we've just been working on, you may also 
 ## encounter data sets in a wide format (this is the format we have been using in 
@@ -145,10 +154,21 @@ plot(density(h2$mean))
 ## wide format. In addition to group_by() and summarize(), you will need the function 
 ## spread(). Assign the result to wide
 
+#DOUBT
+
+wide <- lexdat %>%
+  group_by(Subject, Class) %>%
+  summarize(mean = mean(RT, na.rm = TRUE)) %>%
+  spread(lexdat, key = Class, value = mean)
+
 ## 16. Compute a t-test on the wide format data - note that for wide-format 
 ##  data you need to use a different syntax inside t.test()
 
+t.test(wide$animal, wide$plant, paired = TRUE)
+
 ## 17. What do you conclude from this?
+
+#TODO
 
 ## 18. Now let's look at yet another question, namely whether the native language 
 ##  of the participant influences their reaction time. Check out the variable
@@ -156,11 +176,27 @@ plot(density(h2$mean))
 ##  of t-test would you use? Can you think of a situation, where a t-test would not 
 ##  be enough to test for a difference depending on the native language?
 
+lexdat$NativeLanguage
+
+## Yes, a t-test can be performed and the independent t-test can be used since there are two 
+## independent categories - English and other.
+
+#TODO
+
 ## 19. Use again group_by and summarize to obtain by subject means of RT, but
 ## this time with regard to NativeLanguage and assign it to bySubjNatLang
 ## Perform the t-test you decided for.
 
+bySubjNatLang <- lexdat %>%
+  group_by(Subject, NativeLanguage) %>%
+  summarize(mean = mean(RT, na.rm = TRUE))
+
+t.test(mean ~ NativeLanguage, data = bySubjNatLang)
+
 ## 20. What do you conclude?
+
+## From the results of the t-test, since p < 0.05, we can reject the null hypothesis and
+##conclude that the native language does influence the reaction time of a person.
 
 ## 21. Compute the effect size using Cohen's D. 
 

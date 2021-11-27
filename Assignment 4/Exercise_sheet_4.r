@@ -159,9 +159,7 @@ t.test(mean ~ PrevType, data = bySubj, paired = TRUE)
 ## wide format. In addition to group_by() and summarize(), you will need the function 
 ## spread(). Assign the result to wide
 
-#DOUBT
-
-lexdat_df <- as.data.frame(lexdat)
+lexdat_df <- as.data.frame(lexdat) ##converting the dataset to a dataframe
 
 wide <- lexdat_df %>%
   group_by(Class, Subject) %>%

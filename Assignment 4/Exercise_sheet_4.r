@@ -161,10 +161,14 @@ t.test(mean ~ PrevType, data = bySubj, paired = TRUE)
 
 #DOUBT
 
-wide <- lexdat %>%
-  group_by(Subject, Class) %>%
+lexdat_df <- as.data.frame(lexdat)
+
+wide <- lexdat_df %>%
+  group_by(Class, Subject) %>%
   summarize(mean = mean(RT, na.rm = TRUE)) %>%
-  spread(lexdat, key = Class, value = mean)
+  spread(Class, as.numeric(mean))
+
+wide
 
 ## 16. Compute a t-test on the wide format data - note that for wide-format 
 ##  data you need to use a different syntax inside t.test()
@@ -173,7 +177,8 @@ t.test(wide$animal, wide$plant, paired = TRUE)
 
 ## 17. What do you conclude from this?
 
-#TODO
+## From the result of this t-test on the wide format data, we see that the p-value > 0.05 
+## and hence we accept the null hypothesis.
 
 ## 18. Now let's look at yet another question, namely whether the native language 
 ##  of the participant influences their reaction time. Check out the variable
@@ -186,7 +191,8 @@ lexdat$NativeLanguage
 ## Yes, a t-test can be performed and the independent t-test can be used since there are two 
 ## independent categories - English and other.
 
-#TODO
+## If there are more than two categories in the native language variable, then a t-test cannot
+## be used.
 
 ## 19. Use again group_by and summarize to obtain by subject means of RT, but
 ## this time with regard to NativeLanguage and assign it to bySubjNatLang

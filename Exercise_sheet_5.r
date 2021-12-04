@@ -113,41 +113,87 @@ cor.test(x=RT, y=FreqSingular, data=data, method = "spearman")
 ## m) Is there any reason to prefer this correlation measure in the current context? 
 ##  In general, in what contexts would you use Kendall's tau?
 
+
 ################################
 ### Exercise 2: Regression
 ################################
 
 
-## a) Read in the data set lexicalDecision2.csv provided on cms and turn the variable Word 
-##  into a factor. This data set is similar to the one used above in that it looks at lexical decision 
-##  times for different words with the explanatory variables Frequency, Length and SynsetCount.
+## a) Read in the data set lexicalDecision2.csv provided on cms and turn the variable Word
+## into a factor. This data set is similar to the one used above in that it looks at lexical decision
+## times for different words with the explanatory variables Frequency, Length and SynsetCount.
+data <- read.csv("lexicalDecision2.csv")
+data$Word <- factor(Word)
+str(data)
 
-## b) First, we will investigate the relationship between meanRT and Length, which gives the length 
-##  of the word in letters. Make a scatter plot of meanRT and Length (as always: ggplot). You can use
-##  geom_jitter() to avoid overplotting
+
+
+## b) First, we will investigate the relationship between meanRT and Length, which gives the length
+## of the word in letters. Make a scatter plot of meanRT and Length (as always: ggplot). You can use
+## geom_jitter() to avoid overplotting
+ggplot(data, aes(x=meanRT, y=Length)) +
+  geom_jitter()
+
+
+
 
 ## c) Run a regression model with meanRT and Length and look at the summary.
-## General form: 
-## "modelname <- lm(outcome ~ predictor, data = dataFrame, na.action = an action)"
+## General form:
+## "modelname <- lm(meanRT ~ Length, data = data, na.action = an action)"
 ## "summary(modelname)"
 
+
+
+modelname <- lm(meanRT ~ Length, data = data, na.action =NULL)
+summary(modelname)
+
+
+
 ## d) Interpret the model from c. What do intercept and the coefficient of Length tell you?
+## Since the model is a linear model, the intercept shows the cordinate at which the regression line crosses on y-axis.
+## and Lenght parameter is the slope of the regression line
+
+
 
 ## e) What about the model fit: What proportion of the total variance is explained by your model?
+## The Residual standard error field will explain the variance of the model but with the number
+## of parameters that were involved in calculating the response of the model.
 
-## f) Now let's turn to the relationship between meanRT and Frequency. Run the regression and 
+
+
+## f) Now let's turn to the relationship between meanRT and Frequency. Run the regression and
 ## interpret.
+modelname2 <- lm(meanRT ~ Frequency , data = data, na.action =NULL)
+summary(modelname2)
+
+
 
 ## g) Plot meanRT by Frequency and add a regression line to your plot
+head(data)
+plot(data$Frequency, data$meanRT, pch = 16, cex = 1.3, col = "blue", xlab = "Frequency", ylab = "meanRT")
+abline(modelname2)
 
 ## h) Redo the plot, but instead of points, plot the Word value.
 ## Do you think there are any "bad" outliers, i.e. highly influential data points in your data set? 
+ggplot(data, aes(x = meanRT, y = Word)) + geom_jitter()
+
+# Yes, an outlier for the word 'vulture' seems to be a bad outlier.
+dim(data)
+
+excluded_model <- filter(data, Word != "egplant")
+dim(excluded_model)
 
 ## i) Rerun the model excluding the data point for the word "egplant". Compare the results.
+modelname3 <- lm(meanRT ~ Frequency , data = excluded_model, na.action =NULL)
+summary(modelname3)
+
+# When the 2 model statistics are compared, we can see that the intercept value and the std. error increases.
+# The p-value decreases.
 
 ## j) Given the difference between the two models and the peculiarities that you observe for this 
 ## data point, would you exclude this data point from further analysis?
 
+# Yes, we can exclude this data point since the p-value for the data is decreasing.
 
 ###################################
 ### Exercise 3: Multiple Regression
@@ -160,11 +206,28 @@ cor.test(x=RT, y=FreqSingular, data=data, method = "spearman")
 ## General form: 
 ## "modelname <- lm(outcome ~ predictor1+predictor2+.., data = dataFrame, na.action = an action)"
 ## "summary(modelname)"
+modelname4 <- lm(meanRT ~ Frequency + Length , data = data, na.action =NULL)
+summary(modelname4)
 
 ## b) Interpret the model: what do intercept and the 2 coefficients tell you? What about significance?
+
+# The intercept tells us that the value of MeanRT would still be 6.45 even if both the predictors were set to 0.
+# The frequency coefficient is negative, which means that MeanRT and Frequency are inversely proportional.
+# The length coefficient is positive, which means that as length increases,  MeanRT will increase.
+# The p-value of Frequency is very low hence it means that it is statistically significant. However,
+# the p-value of Length is not low (0.0262) hence Length is not statistically significant.
 
 ## c) Compare to the model in 2c (only including Length), has the model fit improved? How about
 ## the model in 2f (only including Frequency)?
 
+# Yes, the model fit for multiple regression has improved compared to both models as the R squared value has increased.
+
+
+
 ## d) Using the model from 3 a: What is the predicted meanRT for the word "giraffe", which has a Frequency 
 ## of 3.33. Calculate "by hand", i.e. do not use predict() and show your calculation.
+
+# MeanRT = Frequency * -0.03419 + 6.54711
+#        = 3.33 *  -0.03419 + 6.54711
+#        = 6.4332573
+

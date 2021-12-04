@@ -84,7 +84,7 @@ cor(data, use="complete.obs")
 
 ## h) Is the correlation between RT and FreqSingular significant? Use cor.test()
 
-cor.test(x=RT, y=FreqSingular, data=data)
+cor.test(x=data$RT, y=data$FreqSingular, data=data)
 
 ## From the results obtained, since the p-value < 0.05, we can conclude that the
 ## null hypothesis is rejected and that there is a significant correlation between
@@ -93,7 +93,7 @@ cor.test(x=RT, y=FreqSingular, data=data)
 ## i) Calculate the Spearman rank correlation between RT and FreqSingular. 
 ## What do you observe?
 
-cor.test(x=RT, y=FreqSingular, data=data, method = "spearman")
+cor.test(x=data$RT, y=data$FreqSingular, data=data, method = "spearman")
 
 ## Here, the p-value is still <0.05 which means there is a significant correlation between
 ## RT and FreqSingular.Also the correlation value, rho is -0.228 compared to -0.139 in the
@@ -122,16 +122,16 @@ cor.test(x=RT, y=FreqSingular, data=data, method = "spearman")
 ## a) Read in the data set lexicalDecision2.csv provided on cms and turn the variable Word
 ## into a factor. This data set is similar to the one used above in that it looks at lexical decision
 ## times for different words with the explanatory variables Frequency, Length and SynsetCount.
-data <- read.csv("lexicalDecision2.csv")
-data$Word <- factor(Word)
-str(data)
+data_2 <- read.csv("lexicalDecision2.csv")
+data_2$Word <- factor(data_2$Word)
+str(data_2)
 
 
 
 ## b) First, we will investigate the relationship between meanRT and Length, which gives the length
 ## of the word in letters. Make a scatter plot of meanRT and Length (as always: ggplot). You can use
 ## geom_jitter() to avoid overplotting
-ggplot(data, aes(x=meanRT, y=Length)) +
+ggplot(data_2, aes(x=meanRT, y=Length)) +
   geom_jitter()
 
 
@@ -144,14 +144,14 @@ ggplot(data, aes(x=meanRT, y=Length)) +
 
 
 
-modelname <- lm(meanRT ~ Length, data = data, na.action =NULL)
+modelname <- lm(meanRT ~ Length, data = data_2, na.action =NULL)
 summary(modelname)
 
 
 
 ## d) Interpret the model from c. What do intercept and the coefficient of Length tell you?
 ## Since the model is a linear model, the intercept shows the cordinate at which the regression line crosses on y-axis.
-## and Lenght parameter is the slope of the regression line
+## and Length parameter is the slope of the regression line
 
 
 
@@ -163,24 +163,24 @@ summary(modelname)
 
 ## f) Now let's turn to the relationship between meanRT and Frequency. Run the regression and
 ## interpret.
-modelname2 <- lm(meanRT ~ Frequency , data = data, na.action =NULL)
+modelname2 <- lm(meanRT ~ Frequency , data = data_2, na.action =NULL)
 summary(modelname2)
 
 
 
 ## g) Plot meanRT by Frequency and add a regression line to your plot
-head(data)
-plot(data$Frequency, data$meanRT, pch = 16, cex = 1.3, col = "blue", xlab = "Frequency", ylab = "meanRT")
+head(data_2)
+plot(data_2$Frequency, data_2$meanRT, pch = 16, cex = 1.3, col = "blue", xlab = "Frequency", ylab = "meanRT")
 abline(modelname2)
 
 ## h) Redo the plot, but instead of points, plot the Word value.
 ## Do you think there are any "bad" outliers, i.e. highly influential data points in your data set? 
-ggplot(data, aes(x = meanRT, y = Word)) + geom_jitter()
+ggplot(data_2, aes(x = meanRT, y = Word)) + geom_jitter()
 
 # Yes, an outlier for the word 'vulture' seems to be a bad outlier.
 dim(data)
 
-excluded_model <- filter(data, Word != "egplant")
+excluded_model <- filter(data_2, Word != "egplant")
 dim(excluded_model)
 
 ## i) Rerun the model excluding the data point for the word "egplant". Compare the results.
@@ -206,7 +206,7 @@ summary(modelname3)
 ## General form: 
 ## "modelname <- lm(outcome ~ predictor1+predictor2+.., data = dataFrame, na.action = an action)"
 ## "summary(modelname)"
-modelname4 <- lm(meanRT ~ Frequency + Length , data = data, na.action =NULL)
+modelname4 <- lm(meanRT ~ Frequency + Length , data = data_2, na.action =NULL)
 summary(modelname4)
 
 ## b) Interpret the model: what do intercept and the 2 coefficients tell you? What about significance?
@@ -230,4 +230,3 @@ summary(modelname4)
 # MeanRT = Frequency * -0.03419 + 6.54711
 #        = 3.33 *  -0.03419 + 6.54711
 #        = 6.4332573
-

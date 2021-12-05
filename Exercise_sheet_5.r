@@ -105,13 +105,30 @@ cor.test(x=data$RT, y=data$FreqSingular, data=data, method = "spearman")
 ## Use group_by() and summarize() to obtain mean RTs by FreqSingular.
 ## Make a scatter plot between the two variables of the resulting data set.
 
+new <- data %>%
+  group_by(RT , FreqSingular ) %>%
+  summarize(mean = mean(RT, na.rm = TRUE))
+
+ggplot(new, aes(x=FreqSingular  , y=RT)) + 
+  geom_point()
+
 ## k) Looking at the graph, why do you think Spearman's rho is better suited than the Pearson 
 ## correlation to describe the relationship between the two variables?
 
+## Pearson's correlation coefficient only tells us the linear correlation between the 2 variables.
+## whereas The Spearman's rho evaluates a correlation between two variables which
+## is based on the ranked values for each variable rather than the raw data.
+
 ## l) Calculate Kendall's tau for the same relationship. 
+
+cor.test(new$FreqSingular, new$FreqSingular, method="kendall") 
 
 ## m) Is there any reason to prefer this correlation measure in the current context? 
 ##  In general, in what contexts would you use Kendall's tau?
+
+## We should use Kendall's tau when the ranks are not important
+## and in general it is used when we want to find the relationship between the 2 variables (ordinal data) 
+## and when we don't have to worry about outliers or when the exact distance in ranks is not important. 
 
 
 ################################
@@ -181,7 +198,7 @@ ggplot(data_2, aes(x = meanRT, y = Word)) + geom_jitter()
 dim(data)
 
 excluded_model <- filter(data_2, Word != "egplant")
-dim(excluded_model)
+dim(excluded_model) 
 
 ## i) Rerun the model excluding the data point for the word "egplant". Compare the results.
 modelname3 <- lm(meanRT ~ Frequency , data = excluded_model, na.action =NULL)

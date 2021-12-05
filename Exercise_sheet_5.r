@@ -195,7 +195,7 @@ abline(modelname2)
 ggplot(data_2, aes(x = meanRT, y = Word)) + geom_jitter()
 
 # Yes, an outlier for the word 'vulture' seems to be a bad outlier.
-dim(data)
+dim(data_2)
 
 excluded_model <- filter(data_2, Word != "egplant")
 dim(excluded_model) 

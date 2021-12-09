@@ -118,16 +118,21 @@ data_sub <- subset(amis, warning==1, select=c(speed, period, pair, warning))
 casted_data <- data_sub %>%
   group_by(pair, period) %>%
   summarize(mean = mean(speed, na.rm = TRUE))
+casted_data
 
 ## b) Build boxplots of the average speed depending on "period".
-  
+
 ggplot(casted_data) +
   geom_boxplot(aes(period, mean, group=period))
 
 ## c) Looking at the boxplots, is there a difference between the periods?
 
+# Yes, both the ranges as well as the means for the periods differ. Also, there is an 
+# outlier for period #2.
+
 ## d) Now we are ready to perform 1-way ANOVA: please use the function aov() on the 
 ## speed depending on the period and assign the result to aov1way
+aov1way <- aov(mean ~ period, data = casted_data)
 
 ## Before we interpret the results, let's check the ANOVA assumptions and whether 
 ## they are violated or not and why.
@@ -136,12 +141,30 @@ ggplot(casted_data) +
 ## (Figure out the best way to check this assumption and give a detailed justified 
 ## answer to whether it is violated or not.)
 
+# There is no formal test to verify the independence assumption. In order to check whether 
+# it is satisfied, the data collection method needs to be analysed. From the data collection,
+# it is obvious that each sample is independent of the other and hence there is independence
+# of observations within groups. Similarly, there is independence between groups.
+
 ## f) Normality of residuals
 ##  First add the residuals to your casted data set, you find them in model$residuals
 ##  next, make a qqplot (using qqnorm() or geom_qq() ina ggplot) for the residuals and 
 ##  run the shapiro wilk test.
 
+casted_data$Residuals<-aov1way$residuals
+
+qqnorm(casted_data$Residuals)
+qqline(casted_data$Residuals)
+
+shapiro.test(casted_data$Residuals)
+
+
 ## g) What do you conclude from your results in f?
+
+# From the shapiro-wilk normality test, we can see that the p-value is 0.01798 which
+# is sufficiently large, which is greater than the alpha of 0.05. Hence, the null hypothesis is
+# accepted which states that the data is normally distributed. From the Q-Q plot, we can say the same.
+
 
 ## h) Homogeneity of variance of residuals
 ##  First, plot the residuals by period (boxplots) to see whether variance differs between groups
@@ -149,9 +172,20 @@ ggplot(casted_data) +
 ##  as aov(). It indicates whether the variance is significantly different between groups (= not
 ##  homogeneous).
 
+ggplot(casted_data) +
+  geom_boxplot(aes(period, Residuals, group=period))
+
+
+leveneTest(casted_data$mean, casted_data$period)
+
 ## i) What do you conclude from your results in h?
 
+# The p-value for the Levene's test is 0.8383, which is larger than that of the alpha (0.05). 
+# This means that the null hypothesis can't be rejected (null hyp. is that the variance between groups is same).
+
+
 ## j) Now we turn to the results. Look at the summary of aov1way
+summary(aov1way)
 
 ## k) State your conclusion
 

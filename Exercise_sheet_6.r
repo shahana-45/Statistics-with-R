@@ -233,4 +233,7 @@ aov2way <- aov(mean ~ period * warning, data = casted_data2)
 ## f) Report the p-values and interpret the results in detail. Properly formulate the findings
 ##  with regard to the research question!
 
+summary(aov2way)[[1]][["Pr(>F)"]][1]
+
+#p value = 0.1834544
 

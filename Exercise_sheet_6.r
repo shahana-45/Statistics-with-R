@@ -188,12 +188,21 @@ leveneTest(casted_data$mean, casted_data$period)
 summary(aov1way)
 
 ## k) State your conclusion
+#Instead of getting information for each coefficient, we get information for each factor. 
+#Here in this case, we have the summary for the factor 'period' and the residuals (i.e. difference between mean and entered value)
 
 ## l) Please do pairwise t-tests of the same variables as in d) using pairwise.t.test().
+pairwise.t.test(casted_data$mean, casted_data$period)
 
 ## m) Try to use no adjustment for pairwise testing and then the Bonferroni correction.
+pairwise.t.test(casted_data$mean, casted_data$period,p.adjust.method = "none")
+
+pairwise.t.test(casted_data$mean, casted_data$period,p.adjust.method = "bonferroni")
 
 ## n) If the results change  in m, why do they? What does Bonferroni correction do?
+# The results change in m because because the 2 test are run without and with correction (Bonferroni) respectively.  
+# In the Bonferroni correction, p-values are multiplied by the number of comparisons.
+
 
 #######################
 ### Exercise 3: 2-way ANOVA
@@ -203,14 +212,25 @@ summary(aov1way)
 ## So let's turn back to our initial dataset amis (not its subset with warning==1).
 ## First, we need to average the speed over each `pair`, `warning` and `period
 ## Cast your data again and assign the results to casted_data2.
+casted_data2 <- amis %>%
+  group_by(pair,warning, period) %>%
+  summarize(mean = mean(speed, na.rm = TRUE))
+
 
 ## b) State the main difference between the applicability of 1-way and 2-way ANOVA.
+#The main difference between the applicability of 1-way and 2-way ANOVA is that 
+#in 1-way ANOVA there is only 1 independent variable used  and in 2-way ANOVA there are multiple independent variables used.
+
 
 ## c) Do you think, we need to include an interaction term in the ANOVA?
+#Yes we can include an interaction term in the ANOVA
 
 ## e) Now apply the 2-way ANOVA: please use the function aov() with mean speed as the
 ## dependent variable, period and warning as predictor (independent) variables and depending on your
 ## answer in c) either including an interaction term, or not.
+aov2way <- aov(mean ~ period * warning, data = casted_data2)
 
 ## f) Report the p-values and interpret the results in detail. Properly formulate the findings
 ##  with regard to the research question!
+
+

@@ -75,16 +75,14 @@ str(data)
 install.packages('patchwork') #because par() does not work with ggplot2 package
 library(patchwork)
 
-#DOUBT
+newdata <- filter(data, warning==1)
 
-plot1 <- ggplot(data) +
+plot1 <- ggplot(newdata) +
   geom_boxplot(aes(period, speed))
 
-plot2 <- ggplot(data) +
-  geom_boxplot(aes(warning, speed))
-
-#plot3 <- ggplot(data) +
-#  geom_boxplot(aes(period, warning))
+newdata2 <- filter(data, warning==2)
+plot2 <- ggplot(newdata2) +
+  geom_boxplot(aes(period, speed))
 
 plot1 + plot2
 
@@ -181,7 +179,8 @@ leveneTest(casted_data$mean, casted_data$period)
 ## i) What do you conclude from your results in h?
 
 # The p-value for the Levene's test is 0.8383, which is larger than that of the alpha (0.05). 
-# This means that the null hypothesis can't be rejected (null hyp. is that the variance between groups is same).
+# This means that the null hypothesis can't be rejected (null hyp. is that the variance betwee
+# groups is same).
 
 
 ## j) Now we turn to the results. Look at the summary of aov1way
@@ -189,7 +188,8 @@ summary(aov1way)
 
 ## k) State your conclusion
 #Instead of getting information for each coefficient, we get information for each factor. 
-#Here in this case, we have the summary for the factor 'period' and the residuals (i.e. difference between mean and entered value)
+#Here in this case, we have the summary for the factor 'period' and the residuals (i.e. 
+#difference between mean and entered value)
 
 ## l) Please do pairwise t-tests of the same variables as in d) using pairwise.t.test().
 pairwise.t.test(casted_data$mean, casted_data$period)
@@ -200,7 +200,8 @@ pairwise.t.test(casted_data$mean, casted_data$period,p.adjust.method = "none")
 pairwise.t.test(casted_data$mean, casted_data$period,p.adjust.method = "bonferroni")
 
 ## n) If the results change  in m, why do they? What does Bonferroni correction do?
-# The results change in m because because the 2 test are run without and with correction (Bonferroni) respectively.  
+# The results change in m because because the 2 test are run without and with correction
+# (Bonferroni) respectively.  
 # In the Bonferroni correction, p-values are multiplied by the number of comparisons.
 
 
@@ -219,21 +220,25 @@ casted_data2 <- amis %>%
 
 ## b) State the main difference between the applicability of 1-way and 2-way ANOVA.
 #The main difference between the applicability of 1-way and 2-way ANOVA is that 
-#in 1-way ANOVA there is only 1 independent variable used  and in 2-way ANOVA there are multiple independent variables used.
+#in 1-way ANOVA there is only 1 independent variable used  and in 2-way ANOVA there are
+#multiple independent variables used.
 
 
 ## c) Do you think, we need to include an interaction term in the ANOVA?
-#Yes we can include an interaction term in the ANOVA
+#No we don't need to include an interaction term in the ANOVA 
+#because the 2 independent variables are not dependent on each other
 
 ## e) Now apply the 2-way ANOVA: please use the function aov() with mean speed as the
 ## dependent variable, period and warning as predictor (independent) variables and depending on your
 ## answer in c) either including an interaction term, or not.
-aov2way <- aov(mean ~ period * warning, data = casted_data2)
+aov2way <- aov(mean ~ period + warning, data = casted_data2)
 
 ## f) Report the p-values and interpret the results in detail. Properly formulate the findings
 ##  with regard to the research question!
 
 summary(aov2way)[[1]][["Pr(>F)"]][1]
 
-#p value = 0.1834544
-
+#p value = 0.1808576
+#Since the p-value is above 0.05, we can accept the null hypothesis
+#As we accept the null hypothesis, we can conclude that the warning signs don't affect the speed 
+#(this can also be seen in the box plots in ans 1.d)

@@ -102,13 +102,41 @@ lm3 <- lm(RT ~ Frequency*PrevType, data=data)
 
 plot(lm3)
 
-
 ## j) Report the results of lm3 and interpret with the help of the graph in i)
+# We get 4 plots with lm3 as below :
+#i) Residual vs fitted: We can notice the homogeneity of the variance in the plot i.e. the residuals are equally distributed 
+#ii) Normal QQ plot: It would be a perfect normal distribution if all the points would lie on the dotted line, 
+#    but points 1194, 1619,1620 make the residual's distribution slightly skewed.
+#iii) Fitted value vs Scale Location : Residuals are spread equally along the ranges of predictors as the line is 
+#  rougly straight (horizontal)
+#iv) Residual vs leverage : points 1619, 1194, 1187 have very high leverage and large standardized residuals.
+
 
 ## k) Do model checking on your model lm3, i.e. inspect the standard model plots provided by R (no ggplot, 
 ## see lecture notes for syntax)
 
+par(mfcol=c(2,3))
+plot(lm3 <- lm(RT ~ Frequency*PrevType, data=data), which=seq(1,6))
+
+#Adding to the plot descriptions from above:
+# v) Cooks distance : Shows that the model would change drastically if we remove points 1194, 1619, 1187
+# vi) Cooks distance vs leverage : Shows us how much leverage our graph has wrt data points
+
 ## l) Interpret what you see in k) and possibly suggest further steps
+# We can perform various tests like Levene's test  (to determine if the variance is homogeneous or not
+# and check if the values are significantly independent or not), 
+# Kruskall's Wallis test (to check normality of residuals) or 
+# calculate VIF (to check correlation between predictors)
 
 ## m) So, what assumptions are violated in the model as it is? Consider both your results from l and what you know 
 ##  about the data set from previous analyses.
+ leveneTest(RT ~ Frequency * PrevType, data=data)
+ #p-values are significant, therefore variance is homogeneous
+ 
+ kruskal.test(RT ~ Frequency, data=data) 
+ kruskal.test(RT ~ PrevType, data=data)
+#Both p-values are significant, therefore residuals follow a normal distribution
+ 
+ vif(lm3)
+# The correlation between the predictors is causing a lot of uncertainty, 
+# therefore the assumption about the correlation between the predictors is violated.

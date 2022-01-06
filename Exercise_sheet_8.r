@@ -80,15 +80,32 @@ ggplot(ChickWeight) +
 ##  specify:
 ##  1) What fixed effect(s) do you enter into the model?
 
+## Diet and Time are fixed effects because the observations are made at specific points of time 
+## and the diet is already decided upon, hence no randomness is expected.
+
 ##  2) what random effect(s) should be included to account for the repeated measures structure of the data?
+
+## Chick is the random effect that should be included. This is because the chicks 
+## participating in the study may have different genetic compositions like faster or slower
+## metabolism and thus causes a randomness.
 
 ##  3) In addition to random intercept(s), which random slope(s) should you add to get a maximal model?
 
+## TODO
+
 ## f) Run the model you specified in e) using lmer() and assign it to chickmod
+
+chickmod <- lmer(weight ~ Diet*Time + (1|Chick), data=ChickWeight)
+chickmod
 
 ## g) Rerun the model leaving out the interaction between Time and Diet and assign it to chicknull
 
+chicknull <- lmer(weight ~ Diet + (1|Chick), data=ChickWeight)
+chicknull
+
 ## h) compare the two models using the anova() function, which performs a likelihood ratio test
+
+anova(chickmod, chicknull)
 
 ## i) Report the p-value (from h) and the conclusion with respect to the research hypothesis
 

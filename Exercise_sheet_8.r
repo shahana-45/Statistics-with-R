@@ -91,31 +91,31 @@ ggplot(ChickWeight) +
 
 ##  3) In addition to random intercept(s), which random slope(s) should you add to get a maximal model?
 
-## TODO
+## We have selected Time as the random slope to get a maximal model.
 
 ## f) Run the model you specified in e) using lmer() and assign it to chickmod
 
-chickmod <- lmer(weight ~ Diet*Time + (1|Chick), data=ChickWeight)
+chickmod <- lmer(weight ~ Diet*Time + (1+Time|Chick), data=ChickWeight)
 chickmod
 
 ## g) Rerun the model leaving out the interaction between Time and Diet and assign it to chicknull
 
-chicknull <- lmer(weight ~ Diet + (1|Chick), data=ChickWeight)
+chicknull <- lmer(weight ~ Diet + (1+Time|Chick), data=ChickWeight)
 chicknull
 
 ## h) compare the two models using the anova() function, which performs a likelihood ratio test
 
 anova(chickmod, chicknull)
 
-
 ## i) Report the p-value (from h) and the conclusion with respect to the research hypothesis
-#P-value : 2.2e-16
+#P-value : < 2.2e-16
 #Since p-value is less than 0.05, we can conclude that the type of diet has an effect on the chick's growth
 
 
 ## j) The following code creates a plot of all chick specific intercepts and slopes. What do you see?
 print(dotplot(ranef(chickmod,condVar=TRUE),  scales = list(x = list(relation = 'free')))[["Chick"]])
-#We get the posterior uncertainty over the random effects of chickmod using the above function. 
+#We get the posterior uncertainty over the random effects of chickmod and the intercept increases 
+# and Time decreases with increasing y values using the above function. 
 #The plot gives us point estimates of random variables
 
 #####################################################
@@ -146,6 +146,7 @@ m5 = lmer(RT ~ PrevType+ Complex+ (PrevType+Complex|Subject) + (1| Word), lexdec
 ##  Given the design of your study, what random effects should you add to the model below?
 ##  Explain!!! If you want to, you can additionally add the random effects into the formula
 
-## lmer(advancedalgebrascore ~ mathGrade + tutor + university, someData)
+## lmer(advancedalgebrascore ~ mathGrade + (1|Tutor) + (1|University), someData)
+
 #We added the variables tutor and university every student will come from a different University 
-#and will have a different tutor
+#and will have a different tutor.

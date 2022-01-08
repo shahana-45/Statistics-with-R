@@ -148,4 +148,4 @@ m5 = lmer(RT ~ PrevType+ Complex+ (PrevType+Complex|Subject) + (1| Word), lexdec
 
 ## lmer(advancedalgebrascore ~ mathGrade + tutor + university, someData)
 #We added the variables tutor and university every student will come from a different University 
-#and will have a differemt tutor
+#and will have a different tutor

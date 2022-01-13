@@ -87,22 +87,41 @@ pred_probability
 ## students consume more coffee, when it is cold outside
 
 ## a) Download the data set from cms and read it in, store it in a variable called: coffeedat
+coffeedat <- read.csv("coffee.csv", header = TRUE)
+
 
 ## b) Plot the number of consumed cups of coffee in three individual scatterplots by sleep, mood, and temperature. 
 ##  You can use geom_jitter() to get a nicer plot
+ggplot(coffeedat) +
+  geom_jitter( aes(x=coffee, y=sleep))
+
+ggplot(coffeedat) +
+  geom_jitter( aes(x=coffee, y=mood))
+
+ggplot(coffeedat) +
+  geom_jitter( aes(x=coffee, y=temperature))
 
 ## c) Can you detect an obvious relationship in any of the plots? Which direction does it have?
 
+# There seems to be a relationship between sleep and coffee and it has a negative slope/direction.
+
+
 ## d) fit a simple linear regression model with all three predictors and store it in linmod
+linmod <- lm(coffee~sleep+mood+temperature, data=coffeedat)
+
 
 ## e) fit a generalized linear model with the appropriate family (hint: coffee is a count variable) and
 ##  store it in poimod
 
+poimod <- glmer(coffee ~ mood + sleep + temperature  + (1+sleep|mood) + (1+temperature|mood) , data=coffeedat, family=poisson)
+
 ## f) Look at the two summaries, what changed?
+summary(linmod)
+summary(poimod)
 
 ## In the simple linear regression model, sleep and temperature did not have a significant effect on
-## the number of cups of coffee consumed. However, in the generalized linear model, all predictors
-## have a significant effect on the amount of coffee consumed.
+## the number of cups of coffee consumed. However, in the generalized linear model, temperature
+## has a significant effect on the amount of coffee consumed.
 
 ## g) In fact, we have repeated measures in our design, so refit the model including a random intercept for
 ##  subject using glmer() with the correct family specification and store it in mixedpoi

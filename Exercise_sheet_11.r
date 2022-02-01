@@ -54,6 +54,7 @@ lm1 <- lm(RT ~ Frequency + PrevType, data=data)
 
 ## d) Fit the same model as a Bayesian regression using the function brm() and using only defaults (you don't need
 ##  to specify priors or fitting parameters like chains and iterations). Store it in bm1
+set.seed(1111)
 bm1 <- brm(RT ~ Frequency + PrevType, data=data)
 
 ## e) Look at the summaries of bm1 and lm1
@@ -98,16 +99,34 @@ ci_80
 ##   plot is supposed to look like a "fat hairy caterpillar", i.e. the different chains should not be 
 ##   separated in any part of the plot and there should not be a general pattern. Is this the case?
 
+plot(bm1)
+
 ## l) We want the model to run quicker. Change the settings such that each chain only has 180 iterations with 1/4 of
 # them as warmup. Store the result in bm2 and look at summary and trace plots. Use the provided seed to be able to 
 # better compare your results (or try a different one, but provide it together with your answer!)
 set.seed(1111)
 
+bm2 <- brm(RT ~ Frequency + PrevType, data=data, iter = 180, warmup = 45)
+summary(bm2)
+plot(bm2)
+
 ## m) Do you think reducing the iterations was a good idea? Give reasons!
+
+## Reducing the iterations was not a good idea. It led to poor convergence because the Rhat values
+## were greater than 1.
 
 ## n) Another colleague of yours said 2 months ago to you that the effect of frequency is most likely at -0.01 +-0.005
 ##  Use these numbers for a normal prior of Frequency (with 0.005 as sd). Assign the model to bm3. 
 
+bm3 <- brm(RT ~ Frequency + PrevType, data=data, prior = c(prior(normal(-0.01, 0.005),"Intercept"),
+                                                           prior(normal(-0.01, 0.005),"b")))
+summary(bm3)
+
 ## o) How did the estimate and credible interval of frequency change?
 
+## The estimate as well as the range of the credible interval has increased.
+
 ## p) What class of priors does the above one belong to? 
+
+## Since the available information is encoded to build the prior and there is a reasonable amount of data
+## this belongs to the class of Principled Priors.

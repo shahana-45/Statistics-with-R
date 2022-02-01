@@ -62,15 +62,36 @@ summary(bm1)
 
 ## f) How do the parameter estimates compare?
 
+# All 3 parameter estimates have very similar values (the differences are probably due to rounding errors).
+
 ## g) store the posterior samples of b_Frequency in the variable ps_freq. Use the function as_draws_df()
+ps_freq <- as_draws_df(bm1)$b_Frequency
+ps_freq
 
 ## h) Your colleague claims that the effect of frequency has to be smaller (meaning more negative) than -0.03.
 ##  What is the probability of the frequency effect being more negative than -0.03 given your posterior samples?
 ##  Do you agree with your colleague?
+prob <- length(ps_freq[ps_freq < -0.03 ]) / length(ps_freq)
+prob
+
+# Since the probability of frequency being smaller than -0.03 is 0.997, we would agree with the colleague.
 
 ## i) Derive 95% and 80% credible intervals from ps_freq. Compare to the results above.
+ci_95 <- quantile(ps_freq, probs = c(0.025, 0.975))
+ci_95
+
+ci_80 <- quantile(ps_freq, probs = c(0.1, 0.9))
+ci_80
+
+# The 95% credible interval is [-0.05200421 -0.03428475]
+# The 80% credible interval is [-0.04900877 -0.03745797]
+# This corresponds with the results above, as looking at both the credible intervals, we 
+# can see that the range ends at less than -0.03.
 
 ## j) What is the meaning of a credible interval compared to the confidence interval in the frequentist's approach?
+
+# A credible interval is the probability that a true value is within a range, whereas a confidence interval is the probability that a 
+# given range contains the true value.
 
 ## k) Plot the model using the default function, this will give you the posteriors of the model parameters
 ##   as well as the trace plot, which give you an indication of the convergence of your model. The trace 
@@ -90,4 +111,3 @@ set.seed(1111)
 ## o) How did the estimate and credible interval of frequency change?
 
 ## p) What class of priors does the above one belong to? 
-
